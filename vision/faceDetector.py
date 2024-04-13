@@ -12,6 +12,19 @@ class FaceDetector:
         self.__recentSize = (0, 0)
         self.__expectedAreaPercent = 0.1
 
+
+    def __calculate_score(self, x, y, w, h):
+            areaPercent = (w * h) / (self.__frameSize[0] * self.__frameSize[0])
+            score = 0
+            
+            score += abs(areaPercent - self.__expectedAreaPercent) * 1.5
+            score += abs(areaPercent - self.__recentAreaPercent) * 0.5
+            score += abs(x - self.__recentPos[0]) * 0.8
+            score += abs(y - self.__recentPos[1]) * 0.8
+    
+            score = math.log((score * 0.5) + 1, math.e) * 3
+            return score
+
     def __calculate_scores(self, faces):
         scores = []
 
@@ -22,16 +35,8 @@ class FaceDetector:
             aspectRatio = w/h
             if aspectRatio<0.8 or aspectRatio>1.2:
                continue
-
-            areaPercent = (w * h) / (self.__frameSize[0] * self.__frameSize[0])
-            score = 0
             
-            score += abs(areaPercent - self.__expectedAreaPercent) * 1.5
-            score += abs(areaPercent - self.__recentAreaPercent) * 0.5
-            score += abs(x - self.__recentPos[0]) * 0.8
-            score += abs(y - self.__recentPos[1]) * 0.8
-
-            score = math.log((score * 0.5) + 1, math.e) * 3
+            score = self.__calculate_score(x, y, w, h)
             scores.append(score)
 
         return scores
