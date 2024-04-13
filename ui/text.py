@@ -30,8 +30,6 @@ class Text:
         pygame.display.get_surface().blit(text_surface, text_rectangle)
 
     def update(self, dt):
-        # print(self._x)
-        # print(self._y)
         self._x += self._dx * dt
         self._y += self._dy * dt
 
