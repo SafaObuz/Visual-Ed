@@ -8,8 +8,8 @@ class Camera:
         self.__camVideo = cv2.VideoCapture(0, cv2.CAP_V4L2)
 
         self.__camVideo.set(cv2.CAP_PROP_FPS, self.__cameraFPS)
-        self.__camVideo.set(cv2.CAP_PROP_FRAME_WIDTH, self.__cameraRes[0])
-        self.__camVideo.set(cv2.CAP_PROP_FRAME_HEIGHT, self.__cameraRes[1])
+        self.__camVideo.set(cv2.CAP_PROP_FRAME_WIDTH, self.__cameraRes[1])
+        self.__camVideo.set(cv2.CAP_PROP_FRAME_HEIGHT, self.__cameraRes[0])
 
     def get_frame(self):
         ret, frame = self.__camVideo.read()

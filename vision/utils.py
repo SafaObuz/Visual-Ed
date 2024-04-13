@@ -1,3 +1,5 @@
+import cv2
+
 def resize_image(frame, percent):
     if percent == 100:
         return frame

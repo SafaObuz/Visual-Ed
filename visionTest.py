@@ -1,18 +1,23 @@
 import cv2
+
 from vision.camera import Camera
+from vision.faceDetector import FaceDetector
 
-haarCascade = cv2.CascadeClassifier('vision/data/haarcascade_frontalface_default.xml')
+cameraRes = (480, 640)
 
-camera = Camera()
+camera = Camera(cameraRes=cameraRes)
+faceDetector = FaceDetector(cameraRes)
 
 while True:
     frame = camera.get_frame()
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+    face = faceDetector.detect(frame)
 
-    faces = haarCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=9)
+    (x,y,w,h) = face
+    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)
 
-    for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)
+    #for (x, y, w, h) in faces:
+    #    
  
     cv2.imshow('frame', frame)
 
