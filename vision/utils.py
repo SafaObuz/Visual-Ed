@@ -12,3 +12,9 @@ def resize_image(frame, percent):
 
     resized = cv2.resize(frame, (newHeight, newWidth))
     return resized
+
+def crop_image_vertically(frame, topRatio, bottomRatio):
+    topPixels = int(frame.shape[0] * topRatio)
+    bottomPixels = int(frame.shape[1] * bottomRatio)
+
+    return frame[topPixels:bottomPixels, 0:frame.shape[1]]

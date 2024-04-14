@@ -17,17 +17,17 @@ class Tracker:
 
         # Define the process noise covariance (Q)
         self.__kalman.processNoiseCov = np.eye(4, dtype=np.float32)
-        self.__kalman.processNoiseCov[0,0] = 0.7 # X Pos
-        self.__kalman.processNoiseCov[1,1] = 0.7 # Y Pos
-        self.__kalman.processNoiseCov[2,2] = 0.4 # Width
-        self.__kalman.processNoiseCov[3,3] = 0.4 # Height
+        self.__kalman.processNoiseCov[0,0] = 0.1 # X Pos
+        self.__kalman.processNoiseCov[1,1] = 0.1 # Y Pos
+        self.__kalman.processNoiseCov[2,2] = 0.05 # Width
+        self.__kalman.processNoiseCov[3,3] = 0.05 # Height
 
         # Define the measurement noise covariance (R)
         self.__kalman.measurementNoiseCov = np.eye(4, dtype=np.float32)
-        self.__kalman.measurementNoiseCov[0,0] = 3.0 # X Pos
-        self.__kalman.measurementNoiseCov[1,1] = 3.0 # Y Pos
-        self.__kalman.measurementNoiseCov[2,2] = 3.0 # Width
-        self.__kalman.measurementNoiseCov[3,3] = 3.0 # Height
+        self.__kalman.measurementNoiseCov[0,0] = 0.008 # X Pos
+        self.__kalman.measurementNoiseCov[1,1] = 0.008 # Y Pos
+        self.__kalman.measurementNoiseCov[2,2] = 0.01 # Width
+        self.__kalman.measurementNoiseCov[3,3] = 0.01 # Height
 
         # Define the error covariance (P)
         self.__kalman.errorCovPost = np.eye(4, dtype=np.float32)
