@@ -170,7 +170,7 @@ class EyeDetector:
             cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (255, 0, 0), thickness=2)
         """
 
-        cv2.imshow("Upper Face", upperFaceFrame)
+        #cv2.imshow("Upper Face", upperFaceFrame)
         #cv2.imshow("thresh", thresh)
         #cv2.imshow("gray", gray)
 

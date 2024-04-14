@@ -1,12 +1,15 @@
 import cv2
 from vision.visionController import VisionController
 from classroomAssistant import ClassroomAssistant
+from ui.gui import *
 
 from elevenlabs import play
 from elevenlabs.client import ElevenLabs
 
 from dotenv import load_dotenv
 import os
+
+from threading import Thread
 
 load_dotenv()
 
@@ -35,15 +38,13 @@ Here are some guidelines for crafting effective questions:
 
 4. If the student selects "Other," ask follow-up questions to understand their needs better. You can try asking different multiple-choice questions to narrow down the student's needs.
 
-5. Always provide an option to end the conversation if the student is finished or cannot continue.
-
 6. Never ask yes or no questions. Always provide multiple options to choose from.
 
 7. When you don't understand the student's question, repeat the question in your response. This shows that you are actively listening and trying to help.
 
 8. Don't add questions in the options. Only add what the user might want to say. For example, "I want to go to the restroom," "I want to ask a question," etc.
 
-9. Please don't give me empty options. Always provide me with 5 options. If the student selects "Other" and the options are empty, repeat the question: "What kind of assistance does the student need?"
+9. Please don't give me empty options. Always provide me with 5 options. If the student selects "Other" and the options are empty, repeat the question: "What kind of assistance do you need?"
 
 Your primary objective is to understand the student's needs and provide appropriate assistance. Keep the conversation history in mind to maintain context and continuity. 
 
@@ -63,19 +64,78 @@ def talk(text):
     )
     play(audio)
 
+
+ 
+# custom thread class
+class AIThread(Thread):
+    # override the run function
+    def run(self):
+        state = ""
+
+        while True:
+            if state != "asking_question":
+                question, options = assistant.ask_question()
+                print(question)
+
+                options.append("End the Conversation")
+                options = [elem for elem in options if elem]
+                options = options[0:6]
+
+
+                set_gpt_message(question)
+                print_multiple_choice(options)
+
+                talk(question)
+                chosenOption = ""
+                for t in range(len(options)):
+                    option = options[t]
+                    select_multiple_choice(t)
+                    talk("Is it " + option)
+
+                    result = visionController.process()
+                    if(result):
+                        #talk("Yes")
+                        chosenOption = option
+                        break
+                    else:
+                        pass
+                        #talk("No")
+
+                talk("You chose " + chosenOption)
+                if(chosenOption == "End the Conversation"):
+                    talk("End it yeahhh")
+
+
+                state = "asking_question"
+
+        
+
+aiThread = AIThread()
+aiThread.start()
+"""
 while True:
-    question, options = assistant.ask_question()
-    print(question)
-    print(options)
+    result = visionController.process()
+    print(result)
 
-    string = question + " your are options are"
-    for option in options:
-        string += option + " "
-    talk(string)
+    if cv2.waitKey(1) == ord('q'):
+        break
+"""
 
-    option = input()
-    assistant.give_response(option)
-    """visionController.process()
+start_ui()
+set_event(1)
+while True:
+    ui_running = ui_loop()
+    if not ui_running:
+        break
+
+
+
+    
+
+    #option = input()
+    #assistant.give_response(option)
+    
+    """
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

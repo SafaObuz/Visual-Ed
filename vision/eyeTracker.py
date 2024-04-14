@@ -46,7 +46,7 @@ class EyeTracker:
                 break  
 
         #print(str("Entropy:") + t)
-        #cv2.imshow("Thresh-old", thresh)
+        cv2.imshow("Thresh-old", thresh)
 
         contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) 
 
@@ -60,19 +60,21 @@ class EyeTracker:
                 else:
                     numberOfBoxes+=1 
 
-            if(numberOfBoxes >= 1 and numberOfBoxes <= 3):
+            if(numberOfBoxes >= 1 and numberOfBoxes <= 2):
                 break
         #print("Min Limit Index: " + str(t))
 
         thresh = cv2.dilate(thresh,self.__kernel, iterations = 1)
 
         #cv2.imshow("Thresh", thresh)
-        cv2.imshow("Eye Gray", gray)
+        #cv2.imshow("Eye Gray", gray)
 
         numOfWhitePixels = np.sum(thresh >= 255)
         whitePixelPercent = numOfWhitePixels / (eyeFrame.shape[0] * eyeFrame.shape[1])
 
-        if(whitePixelPercent>0.065):
+
+        print(whitePixelPercent)
+        if(whitePixelPercent>0.040):
             return True
         return False
 

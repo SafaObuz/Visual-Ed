@@ -21,8 +21,9 @@ b = Text(font_small, screen)
 c = Text(font_small, screen)
 d = Text(font_small, screen)
 e = Text(font_small, screen)
-start_height = 300
-multiple_choice = [a, b, c, d, e] #Probably should use pygame Group, but I'd rather not finagle with it... I forget how to use
+f = Text(font_small, screen)
+start_height = 200
+multiple_choice = [a, b, c, d, e, f] #Probably should use pygame Group, but I'd rather not finagle with it... I forget how to use
 
 eye = pygame.image.load('ui/graphics/eye.png').convert_alpha()
 eye_original_rect = eye.get_rect()
@@ -114,6 +115,10 @@ def start_ui():
     global event_cnt
     event_cnt = 0
 
+def set_event(event):
+    global event_cnt
+    event_cnt = event
+    
 def ui_loop():
     global event_cnt
     global eye_loc

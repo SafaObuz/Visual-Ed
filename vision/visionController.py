@@ -19,7 +19,8 @@ class VisionController:
         self.__leftEyeTracker = EyeTracker()
         self.__rightEyeTracker = EyeTracker()
 
-    def process(self):
+    def process_step(self):
+        try:
             frame = self.__camera.get_frame()
             face = self.__faceDetector.detect(frame)
 
@@ -27,16 +28,40 @@ class VisionController:
             (x, y, w, h) = self.__faceTracker.process(x, y, w, h)
 
             faceFrame = frame[y:y+h, x:x+w]
-            leftEyeFrame, rightEyeFrame = self.__eyeDetector.detect(faceFrame)
+            if(faceFrame.shape[0] == 0 or faceFrame.shape[1] == 0):
+                print("Couldn't find face!")
+                return None
             
+            leftEyeFrame, rightEyeFrame = self.__eyeDetector.detect(faceFrame)
+
             leftEyeResult = self.__leftEyeTracker.track(leftEyeFrame)
             rightEyeResult = self.__rightEyeTracker.track(rightEyeFrame)
 
             totalResult = leftEyeResult or rightEyeResult
-            if(totalResult):
-                print("Looking")
+            return totalResult
+        except Exception as e:
+            print("Error: " + str(e))
+            return None
+
+    def process(self, n=40):
+        yes = 0
+        no = 0
+
+        index = 0
+        while index<=n:
+            result = self.process_step()
+            if result is None:
+                continue
+
+            if(result == True):
+                yes+=1
             else:
-                print("Not looking")
+                no+=1
+            index+=1
+
+        return yes>no
+
+        
 
     def close(self):
         cv2.destroyAllWindows()
