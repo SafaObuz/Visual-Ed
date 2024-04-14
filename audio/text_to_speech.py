@@ -2,12 +2,12 @@ from elevenlabs import play
 from elevenlabs.client import ElevenLabs
 
 client = ElevenLabs(
-  api_key="a104d475977b456f8f2fd63cad739478", # Defaults to ELEVEN_API_KEY
+  api_key="c0589b977890a8d9eaff24e6619c5037", # Defaults to ELEVEN_API_KEY
 )
 
 audio = client.generate(
-  text="What is popping this is the voice of Visual ed.",
-  voice="Brian",
+  text="I want to talk with teachet about leave of absence to do my past homework.",
+  voice="Stalberts",
   model="eleven_monolingual_v1"
 )
 play(audio)
