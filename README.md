@@ -1,21 +1,24 @@
 # Visual-Ed
-Introduction
-The Locked-In Syndrome Classroom Assistant is an innovative project aimed at assisting individuals with locked-in syndrome in classroom environments. Locked-in syndrome is a condition in which a person is aware and awake but cannot move or communicate verbally due to complete paralysis of nearly all voluntary muscles except for the eyes. This project utilizes cutting-edge technology to provide these individuals with a means of communication and interaction within the classroom setting.
 
-Features
+#Introduction
+The Visual-Ed is an innovative project aimed at assisting individuals with locked-in syndrome in classroom environments. Locked-in syndrome is a condition in which a person is aware and awake but cannot move or communicate verbally due to complete paralysis of nearly all voluntary muscles except for the eyes. This project utilizes cutting-edge technology to provide these individuals with a means of communication and interaction within the classroom setting.
+
+#Features
 Eye Movement Detection: The system incorporates computer vision algorithms to detect the movement of the user's eyes, allowing them to interact with the assistant.
 AI-Powered Assistance: Integrated with OpenAI's GPT-3 model, the assistant predicts and generates responses based on the user's input and context.
 Multiple-Choice Interaction: The assistant engages users with multiple-choice questions, enabling them to respond using eye movements detected by the camera.
 Raspberry Pi Integration: Built on a Raspberry Pi platform, the assistant is compact and portable, making it suitable for use in various educational settings.
 Graphical User Interface (GUI): The assistant features a user-friendly GUI for seamless interaction and accessibility.
-Requirements
+
+#Requirements
 To run the Locked-In Syndrome Classroom Assistant, ensure you have the following dependencies installed:
+i) Python 3.7 or higher
+ii) langchain==1.0.0 or higher
+iii) python-dotenv==0.19.0 or higher
+iv)  pygame
+v) openai
 
-Python 3.7 or higher
-langchain==1.0.0
-python-dotenv==0.19.0
-Install the dependencies using the following command:
-
+#Install the dependencies using the following command:
 bash
 Copy code
 pip install -r requirements.txt
@@ -26,7 +29,7 @@ Install the dependencies as described above.
 Run the assistant script by executing python assistant.py in the terminal.
 Follow the prompts on the GUI to interact with the assistant using eye movements.
 Enjoy the enhanced communication and assistance provided by the Locked-In Syndrome Classroom Assistant!
-Contributing
+#Contributing
 Contributions to the project are welcome! If you'd like to contribute, please follow these steps:
 
 Fork the repository.
@@ -35,10 +38,10 @@ Make your changes and ensure the code passes all tests.
 Commit your changes with clear and descriptive messages.
 Push your changes to your fork.
 Open a pull request to merge your changes into the main repository.
-License
+#License
 This project is licensed under the MIT License. See the LICENSE file for more details.
 
-Acknowledgements
+#Acknowledgements
 We would like to express our gratitude to the developers of OpenAI's GPT-3 model and the contributors to the langchain library for their invaluable contributions to this project.
 
 Feel free to customize this README template to suit your project's specific details and requirements.
