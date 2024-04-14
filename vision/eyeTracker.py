@@ -32,7 +32,7 @@ class EyeTracker:
         if eyeFrame is None:
             return
 
-        cv2.imshow("EyeFrame", eyeFrame)
+        #cv2.imshow("EyeFrame", eyeFrame)
     
         gray = cv2.cvtColor(eyeFrame, cv2.COLOR_BGR2GRAY)
         gray = cv2.equalizeHist(gray) 
@@ -67,7 +67,7 @@ class EyeTracker:
         thresh = cv2.dilate(thresh,self.__kernel, iterations = 1)
 
         #cv2.imshow("Thresh", thresh)
-        #cv2.imshow("Eye Gray", gray)
+        cv2.imshow("Eye Gray", gray)
 
         numOfWhitePixels = np.sum(thresh >= 255)
         whitePixelPercent = numOfWhitePixels / (eyeFrame.shape[0] * eyeFrame.shape[1])

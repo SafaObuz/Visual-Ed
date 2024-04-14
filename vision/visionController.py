@@ -33,7 +33,10 @@ class VisionController:
             rightEyeResult = self.__rightEyeTracker.track(rightEyeFrame)
 
             totalResult = leftEyeResult or rightEyeResult
-            print(totalResult)
+            if(totalResult):
+                print("Looking")
+            else:
+                print("Not looking")
 
     def close(self):
         cv2.destroyAllWindows()

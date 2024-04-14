@@ -159,8 +159,8 @@ class EyeDetector:
         (xl, yl, wl, hl) = self.__leftTracker.process(xl, yl, wl, hl)
         (xr, yr, wr, hr) = self.__rightTracker.process(xr, yr, wr, hr)
 
-        #cv2.rectangle(upperFaceFrame, (xl, yl), (xl + wl, yl + hl), (0, 0, 255), thickness=2)  
-        #cv2.rectangle(upperFaceFrame, (xr, yr), (xr + wr, yr + hr), (0, 255, 0), thickness=2)   
+        cv2.rectangle(upperFaceFrame, (xl, yl), (xl + wl, yl + hl), (0, 0, 255), thickness=2)  
+        cv2.rectangle(upperFaceFrame, (xr, yr), (xr + wr, yr + hr), (0, 255, 0), thickness=2)   
 
         """
         for (x, y, w, h) in leftEyes:
@@ -170,7 +170,7 @@ class EyeDetector:
             cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (255, 0, 0), thickness=2)
         """
 
-        #cv2.imshow("Upper Face", upperFaceFrame)
+        cv2.imshow("Upper Face", upperFaceFrame)
         #cv2.imshow("thresh", thresh)
         #cv2.imshow("gray", gray)
 
