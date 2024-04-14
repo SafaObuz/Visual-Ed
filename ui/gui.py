@@ -3,6 +3,7 @@ from globals import *
 from ui.text import Text
 
 pygame.init()
+global screen
 screen = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT)) #, pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 font = pygame.font.Font('ui/font/Quicksand-Medium.ttf', 50)
@@ -14,7 +15,7 @@ bot_text = Text(font, screen)
 
 eye = pygame.image.load('ui/graphics/eye.png').convert_alpha()
 eye_rect = eye.get_rect()
-arrow = pygame.image.load('ui/graphics/arrow.jpg').convert_alpha()
+arrow = pygame.image.load('ui/graphics/arrow.png').convert_alpha()
 
 def start_ui():
     top_text.set_text("t1")
