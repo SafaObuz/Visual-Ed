@@ -1,5 +1,7 @@
 # Visual-Ed
-![image](https://github.com/SafaObuz/Visual-Ed/assets/127442959/78b9e042-29a7-4853-8380-eb2ada236071)
+![WhatsApp Image 2024-04-14 at 10 10 45_75edf8b7](https://github.com/SafaObuz/Visual-Ed/assets/127442959/9ae2f87c-a465-46cb-ac89-1d8b97103dca)
+
+
 
 
 
