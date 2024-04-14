@@ -1,4 +1,7 @@
 # Visual-Ed
+![image](https://github.com/SafaObuz/Visual-Ed/assets/127442959/78b9e042-29a7-4853-8380-eb2ada236071)
+
+
 
 # Introduction
 The Visual-Ed is an innovative project aimed at assisting individuals with mobility disability in classroom environments, particularly Locked-In syndrome. Locked-in syndrome is a condition in which a person is aware and awake but cannot move or communicate verbally due to complete paralysis of nearly all voluntary muscles except for the eyes. This project utilizes computer vision technology to provide these individuals with a means of communication and interaction within the classroom setting.
