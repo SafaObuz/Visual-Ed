@@ -2,13 +2,20 @@ from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 class ClassroomAssistant:
     def __init__(self, api_key, template):
         self.api_key = api_key
         self.template = template
-        self.summary = ["Summerize the following texts by figuring out what the user needs help with. It should be in first person as if the user is asking for the help. "]
+        self.summary = self.summary = ["Summerize the following texts by figuring out what the user needs help with. It should be in first person as if the user is asking for the help. "]
         self.summary_string = ''
+        self.options = ''
 
     def start_conversation(self):
         prompt = PromptTemplate.from_template(self.template)
@@ -26,7 +33,20 @@ class ClassroomAssistant:
             response = conversation({"question": text})
             print(response['text'])
 
-            self.summary.append(response['text'])
+            self.options = response['text']
+            question = self.options.split('\n')[0]
+            options = [option[2:] for option in self.options.split('\n')[1:]]
+            
+            # Print the current question
+            print(question)
+
+            # Print the options
+            print("Options:")
+            for option in options:
+                print(option[2:])
+
+            # Get the user's response for summary
+            self.summary.append(response['chat_history'])
 
             if text == "end":
                 break
@@ -34,16 +54,19 @@ class ClassroomAssistant:
             text = input("Enter your response: ")
 
             self.summary.append(text)
+            
+            self.options = response['text']
 
     def get_summary(self):
         llm = OpenAI(temperature=0.5, api_key=self.api_key)
         for i in range(len(self.summary)):
             self.summary_string = self.summary_string + self.summary[i] + ' '
         summarize = llm.invoke(self.summary_string)
-        print("Summarize: " + summarize)
+        return(summarize)
+    
 
 if __name__ == "__main__":
-    api_key = "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"
+    api_key = openai_api_key
     template = """
     You are an AI assistant designed to help disabled students communicate by asking multiple-choice questions. 
     Your goal is to understand what the student wants to say or needs assistance with. 
@@ -79,3 +102,4 @@ if __name__ == "__main__":
     summary = assistant.get_summary()
     print("Conversation Summary:")
     print(summary)
+
