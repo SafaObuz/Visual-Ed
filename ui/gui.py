@@ -8,9 +8,9 @@ clock = pygame.time.Clock()
 font = pygame.font.Font('ui/font/Quicksand-Medium.ttf', 50)
 #sound = pygame.mixer.Sound('audio/fdsfds.wav') Maybe use this method if we need
 
-top_text = Text(font)
-mid_text = Text(font)
-bot_text = Text(font)
+top_text = Text(font, screen)
+mid_text = Text(font, screen)
+bot_text = Text(font, screen)
 
 eye = pygame.image.load('ui/graphics/eye.png').convert_alpha()
 eye_rect = eye.get_rect()
@@ -53,8 +53,7 @@ def ui_loop():
             pygame.quit()
             return False
 
-    screen.fill(DEFAULT_BG_COLOR)
-
+    screen.fill((255, 255, 255))
     top_text.update(dt)
     mid_text.update(dt)
     bot_text.update(dt)
@@ -62,7 +61,5 @@ def ui_loop():
     screen.blit(eye, eye_rect)
     screen.blit(arrow, (200,200))
 
-
     pygame.display.flip()
-
     return True

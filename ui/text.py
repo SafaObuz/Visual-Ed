@@ -4,7 +4,7 @@ from globals import *
 MIN_TEXT_SPEED = 100
 
 class Text:
-    def __init__(self, font, color = DEFAULT_TEXT_COLOR, bg = DEFAULT_BG_COLOR):
+    def __init__(self, font, screen, color = DEFAULT_TEXT_COLOR, bg = DEFAULT_BG_COLOR):
         self._message = ''
         self._next_message = ''
         self._state = "static"
@@ -20,6 +20,7 @@ class Text:
         self._dx : float = 0
         self._dy : float = 0
         self._time_sum = 0
+        self._screen = screen
 
     def move_text_to(self, x, y):
         self._x = x
@@ -56,7 +57,7 @@ class Text:
         text_rectangle = text_surface.get_rect(center = (self._x, self._y))
         text_surface.set_alpha(self._alpha)
         text_surface.set_colorkey(DEFAULT_BG_COLOR)
-        pygame.display.get_surface().blit(text_surface, text_rectangle)
+        self._screen.blit(text_surface, text_rectangle)
 
     def update(self, dt):
         self._x += self._dx * dt
@@ -71,6 +72,7 @@ class Text:
             y = max(self._next_y - self._y, MIN_TEXT_SPEED*sgn(self._next_y - self._y), key=abs)
             x = min(self._next_x - self._x, MAX_TEXT_SPEED*sgn(self._next_x - self._x), key=abs)
             y = min(self._next_y - self._y, MAX_TEXT_SPEED*sgn(self._next_y - self._y), key=abs)
+
             self.set_text_vel(x, y)
             if abs(self._next_x - self._x) < 0.9:
                 self._x = self._next_x
@@ -99,9 +101,4 @@ class Text:
             if self._message == self._next_message:
                 self._state = "static"
 
-
         self.display_text()
-
-
-
-

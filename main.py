@@ -8,5 +8,4 @@ if __name__ == "__main__":
         ui_running = ui_loop()
         if not ui_running:
             break
-    
     exit()
