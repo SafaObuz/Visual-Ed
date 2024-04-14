@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 
 from vision.utils import crop_image_vertically, convert_bound_to_percent
+from vision.tracker import Tracker
 
 class EyeDetector:
     def __init__(self, frameSize) -> None:
@@ -9,6 +10,9 @@ class EyeDetector:
         self.__frameSize = frameSize
 
         self.__kernel = np.ones((5,5),np.uint8)
+
+        self.__rightTracker = Tracker(frameSize)
+        self.__leftTracker = Tracker(frameSize)
 
     def __preprocess(self, upperFaceFrame):
         gray = cv2.cvtColor(upperFaceFrame, cv2.COLOR_BGR2GRAY)
@@ -21,9 +25,12 @@ class EyeDetector:
         return gray, thresh
 
     def find_eyes_with_haar_cascade(self, gray):
-        eyes = self.__haarCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=9)
-        if len(eyes) == 0:
-            return []
+        objects = self.__haarCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=9)
+        eyes = []
+        for eye in objects:
+            (x, y, w, h) = eye
+            eyes.append((x, y, w, h))
+
         return eyes
     
     def find_eyes_with_contours(self, thresh):
@@ -90,21 +97,25 @@ class EyeDetector:
         if len(leftEyes) > 0:
             leftEye = self.combine_eyes(leftEyes)    
             (x, y, w, h) = leftEye
+            (x, y, w, h) = self.__leftTracker.process(x, y, w, h)
 
             cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)        
 
         if len(rightEyes) > 0:
             rightEye = self.combine_eyes(rightEyes)    
             (x, y, w, h) = rightEye
+            (x, y, w, h) = self.__rightTracker.process(x, y, w, h)
 
             cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 0, 255), thickness=2)     
 
-        """for (x, y, w, h) in left_eyes:
-            cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)
-
-        for (x, y, w, h) in right_eyes:
-            cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 0, 255), thickness=2)
         """
+        for (x, y, w, h) in leftEyes:
+            cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (255, 0, 0), thickness=2)
+
+        for (x, y, w, h) in rightEyes:
+            cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (255, 0, 0), thickness=2)
+        """
+            
 
         cv2.imshow("Upper Face", upperFaceFrame)
         #cv2.imshow("thresh", thresh)
