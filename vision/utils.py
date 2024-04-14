@@ -18,3 +18,12 @@ def crop_image_vertically(frame, topRatio, bottomRatio):
     bottomPixels = int(frame.shape[1] * bottomRatio)
 
     return frame[topPixels:bottomPixels, 0:frame.shape[1]]
+
+def convert_bound_to_percent(x, y, width, height, frameShape):
+    xPercent = x / frameShape[1]
+    yPercent = y / frameShape[0]
+
+    widthPercent = width / frameShape[1]
+    heightPercent = height / frameShape[0]
+
+    return xPercent, yPercent, widthPercent, heightPercent
