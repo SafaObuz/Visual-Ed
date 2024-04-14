@@ -57,7 +57,23 @@ class EyeDetector:
             else:
                 left_eyes.append(eye)
         return left_eyes, right_eyes
+    
+    def combine_eyes(self, eyes):
+        eye = eyes[0]
 
+        minX = eye[0]
+        minY = eye[1]
+        maxX = minX + eye[2]
+        maxY = minY + eye[3]
+
+        for (x, y, w, h) in eyes:
+            minX = min(minX, x)
+            minY = min(minY, y)
+
+            maxX = max(maxX, x + w)
+            maxY = max(maxY, y + h)
+
+        return (minX, minY, maxX - minX, maxY - minY)
 
     def detect(self, faceFrame):
         contrast = 2
@@ -69,13 +85,26 @@ class EyeDetector:
         gray, thresh = self.__preprocess(upperFaceFrame)
         eyes = self.find_eyes_with_haar_cascade(gray) + self.find_eyes_with_contours(thresh)
     
-        left_eyes, right_eyes = self.split_eyes(eyes, thresh.shape)
+        leftEyes, rightEyes = self.split_eyes(eyes, thresh.shape)
 
-        for (x, y, w, h) in left_eyes:
+        if len(leftEyes) > 0:
+            leftEye = self.combine_eyes(leftEyes)    
+            (x, y, w, h) = leftEye
+
+            cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)        
+
+        if len(rightEyes) > 0:
+            rightEye = self.combine_eyes(rightEyes)    
+            (x, y, w, h) = rightEye
+
+            cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 0, 255), thickness=2)     
+
+        """for (x, y, w, h) in left_eyes:
             cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)
 
         for (x, y, w, h) in right_eyes:
             cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 0, 255), thickness=2)
+        """
 
         cv2.imshow("Upper Face", upperFaceFrame)
         #cv2.imshow("thresh", thresh)
