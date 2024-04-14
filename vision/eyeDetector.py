@@ -50,6 +50,24 @@ class EyeDetector:
 
             eyes.append((x, y, w, h))
         return eyes
+
+    def find_left_manual_eye(self, frameSize):
+        height = int(frameSize[0] * 0.8)
+        width = int(height)
+
+        x = int(frameSize[1] * 0.2)
+        y = int(frameSize[0] * 0.1)
+
+        return (x, y, width, height)
+    
+    def find_right_manual_eye(self, frameSize):
+        height = int(frameSize[0] * 0.8)
+        width = int(height)
+
+        x = int(frameSize[1] * 0.8 - width)
+        y = int(frameSize[0] * 0.1)
+
+        return (x, y, width, height)
     
     def split_eyes(self, eyes, frameSize):
         left_eyes = []
@@ -81,6 +99,15 @@ class EyeDetector:
             maxY = max(maxY, y + h)
 
         return (minX, minY, maxX - minX, maxY - minY)
+    
+    def average_eyes(self, eye1, eye2, w1=0.5, w2=0.5):
+        x = int((eye1[0]*w1 + eye2[0]*w2))
+        y = int((eye1[1]*w1 + eye2[1]*w2))
+
+        width = int((eye1[2]*w1 + eye2[2]*w2))
+        height = int((eye1[3]*w1 + eye2[3]*w2))
+
+        return (x, y, width, height)
 
     def detect(self, faceFrame):
         contrast = 2
@@ -94,19 +121,37 @@ class EyeDetector:
     
         leftEyes, rightEyes = self.split_eyes(eyes, thresh.shape)
 
+        leftEye = None
         if len(leftEyes) > 0:
             leftEye = self.combine_eyes(leftEyes)    
-            (x, y, w, h) = leftEye
-            (x, y, w, h) = self.__leftTracker.process(x, y, w, h)
+            #cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)        
 
-            cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)        
-
+        rightEye = None
         if len(rightEyes) > 0:
             rightEye = self.combine_eyes(rightEyes)    
-            (x, y, w, h) = rightEye
-            (x, y, w, h) = self.__rightTracker.process(x, y, w, h)
+            #cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 0, 255), thickness=2)     
 
-            cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 0, 255), thickness=2)     
+        (xl, yl, wl, hl) = self.find_left_manual_eye(thresh.shape)
+        (xr, yr, wr, hr) = self.find_right_manual_eye(thresh.shape)
+
+        if(leftEye is None):
+            leftEye = (xl, yl, wl, hl)
+        else:
+            leftEye = self.average_eyes((xl, yl, wl, hl), leftEye, 0.75, 0.25)
+
+        if(rightEye is None):
+            rightEye = (xr, yr, wr, hr)
+        else:
+            rightEye = self.average_eyes((xr, yr, wr, hr), rightEye, 0.75, 0.25)
+
+        (xl, yl, wl, hl) = leftEye
+        (xr, yr, wr, hr) = rightEye
+
+        (xl, yl, wl, hl) = self.__leftTracker.process(xl, yl, wl, hl)
+        (xr, yr, wr, hr) = self.__rightTracker.process(xr, yr, wr, hr)
+
+        #cv2.rectangle(upperFaceFrame, (xl, yl), (xl + wl, yl + hl), (0, 0, 255), thickness=2)  
+        #cv2.rectangle(upperFaceFrame, (xr, yr), (xr + wr, yr + hr), (0, 255, 0), thickness=2)   
 
         """
         for (x, y, w, h) in leftEyes:
@@ -115,10 +160,14 @@ class EyeDetector:
         for (x, y, w, h) in rightEyes:
             cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (255, 0, 0), thickness=2)
         """
-            
 
         cv2.imshow("Upper Face", upperFaceFrame)
         #cv2.imshow("thresh", thresh)
         #cv2.imshow("gray", gray)
 
- 
+        leftEyeFrame = upperFaceFrame[yl:yl+hl, xl:xl+wl]
+        rightEyeFrame = upperFaceFrame[yr:yr+hr, xr:xr+wr]
+
+
+
+        return leftEyeFrame, rightEyeFrame

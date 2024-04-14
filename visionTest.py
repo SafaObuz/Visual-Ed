@@ -28,7 +28,10 @@ while True:
 
 
     faceFrame = frame[y:y+h, x:x+w]
-    EyeDetector.detect(faceFrame)
+    leftEyeFrame, rightEyeFrame = EyeDetector.detect(faceFrame)
+    
+    cv2.imshow("Left", leftEyeFrame)
+    cv2.imshow("Right", rightEyeFrame)
 
     #cv2.circle(frame, (x, y), 12, (0,255,0), -1)
 
