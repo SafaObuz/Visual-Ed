@@ -5,15 +5,7 @@ import matplotlib.pyplot as plt
 from vision.utils import crop_image_horizontally, crop_image_vertically
 
 class EyeTracker:
-    def __init__(self, eyeReferences) -> None:
-        self.__eyeReferences = eyeReferences
-        self.__eyeReferenceImages = []
-
-        for reference in eyeReferences:
-            image = cv2.imread(reference)
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            self.__eyeReferenceImages.append(gray)
-
+    def __init__(self) -> None:
         self.__kernel = np.ones((5,5),np.uint8)
 
     def compare_two_images(self, src, ref):
@@ -39,6 +31,8 @@ class EyeTracker:
     def track(self, eyeFrame):
         if eyeFrame is None:
             return
+
+        cv2.imshow("EyeFrame", eyeFrame)
     
         gray = cv2.cvtColor(eyeFrame, cv2.COLOR_BGR2GRAY)
         gray = cv2.equalizeHist(gray) 
@@ -51,7 +45,7 @@ class EyeTracker:
             if(entropy <= 0.55):
                 break  
 
-        print(t)
+        #print(str("Entropy:") + t)
         #cv2.imshow("Thresh-old", thresh)
 
         contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) 
@@ -66,22 +60,21 @@ class EyeTracker:
                 else:
                     numberOfBoxes+=1 
 
-            if(numberOfBoxes == 1):
+            if(numberOfBoxes >= 1 and numberOfBoxes <= 3):
                 break
-        print(t)
+        #print("Min Limit Index: " + str(t))
 
         thresh = cv2.dilate(thresh,self.__kernel, iterations = 1)
 
-        cv2.imshow("Thresh", thresh)
-        cv2.imshow("Eye Gray", gray)
+        #cv2.imshow("Thresh", thresh)
+        #cv2.imshow("Eye Gray", gray)
 
         numOfWhitePixels = np.sum(thresh >= 255)
         whitePixelPercent = numOfWhitePixels / (eyeFrame.shape[0] * eyeFrame.shape[1])
 
         if(whitePixelPercent>0.065):
-            print("yes")
-        else:
-            print("no")
+            return True
+        return False
 
         """
         eyeFrame = crop_image_vertically(eyeFrame, 0.20, 0.98)
