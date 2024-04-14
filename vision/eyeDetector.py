@@ -5,7 +5,7 @@ from vision.utils import crop_image_vertically, convert_bound_to_percent
 from vision.tracker import Tracker
 
 class EyeDetector:
-    def __init__(self, frameSize) -> None:
+    def __init__(self, frameSize,) -> None:
         self.__haarCascade = cv2.CascadeClassifier('vision/data/haarcascade_eye.xml')
         self.__frameSize = frameSize
 
@@ -13,6 +13,9 @@ class EyeDetector:
 
         self.__rightTracker = Tracker(frameSize)
         self.__leftTracker = Tracker(frameSize)
+
+        self.__rightRecentEye = None
+        self.__leftRecentEye = None
 
     def __preprocess(self, upperFaceFrame):
         gray = cv2.cvtColor(upperFaceFrame, cv2.COLOR_BGR2GRAY)
@@ -116,6 +119,15 @@ class EyeDetector:
         upperFaceFrame = crop_image_vertically(faceFrame, 0.25, 0.55)
         upperFaceFrame = cv2.convertScaleAbs(upperFaceFrame, alpha=contrast, beta=brightness)
 
+        (xl, yl, wl, hl) = self.find_left_manual_eye(upperFaceFrame.shape)
+        (xr, yr, wr, hr) = self.find_right_manual_eye(upperFaceFrame.shape)
+
+        if(self.__leftRecentEye is None):
+            self.__leftRecentEye = (xl, yl, wl, hl)
+
+        if(self.__rightRecentEye is None):
+            self.__rightRecentEye = (xr, yr, wr, hr)
+
         gray, thresh = self.__preprocess(upperFaceFrame)
         eyes = self.find_eyes_with_haar_cascade(gray) + self.find_eyes_with_contours(thresh)
     
@@ -131,16 +143,13 @@ class EyeDetector:
             rightEye = self.combine_eyes(rightEyes)    
             #cv2.rectangle(upperFaceFrame, (x, y), (x + w, y + h), (0, 0, 255), thickness=2)     
 
-        (xl, yl, wl, hl) = self.find_left_manual_eye(thresh.shape)
-        (xr, yr, wr, hr) = self.find_right_manual_eye(thresh.shape)
-
         if(leftEye is None):
-            leftEye = (xl, yl, wl, hl)
+            leftEye = self.__leftRecentEye
         else:
             leftEye = self.average_eyes((xl, yl, wl, hl), leftEye, 0.75, 0.25)
 
         if(rightEye is None):
-            rightEye = (xr, yr, wr, hr)
+            rightEye = self.__rightRecentEye
         else:
             rightEye = self.average_eyes((xr, yr, wr, hr), rightEye, 0.75, 0.25)
 
@@ -167,7 +176,5 @@ class EyeDetector:
 
         leftEyeFrame = upperFaceFrame[yl:yl+hl, xl:xl+wl]
         rightEyeFrame = upperFaceFrame[yr:yr+hr, xr:xr+wr]
-
-
 
         return leftEyeFrame, rightEyeFrame
